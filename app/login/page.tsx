@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -36,7 +36,7 @@ const authSchema = z.object({
 
 type AuthFormData = z.infer<typeof authSchema>;
 
-export default function AuthPage() {
+function LoginContent() {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -470,5 +470,30 @@ export default function AuthPage() {
         </motion.div>
       </main>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[100dvh] w-full bg-background flex-col relative overflow-hidden isolate">
+          <BackgroundPattern />
+          <div className="flex-1 flex items-center justify-center p-4">
+            <div className="w-full max-w-md relative z-10 overflow-hidden rounded-2xl shadow-xl border border-border/40 bg-background/80 backdrop-blur-sm p-8 text-center">
+              <div className="space-y-4">
+                <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" />
+                <h2 className="text-2xl font-bold">Loading...</h2>
+                <p className="text-muted-foreground">
+                  Please wait while we load the login page...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   );
 }

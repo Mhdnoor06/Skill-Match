@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { motion } from "framer-motion";
@@ -9,7 +9,7 @@ import { BackgroundPattern } from "@/components/background-pattern";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 
-export default function VerifyPage() {
+function VerifyContent() {
   const [isVerifying, setIsVerifying] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -126,5 +126,30 @@ export default function VerifyPage() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function VerifyPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[100dvh] w-full bg-background flex-col relative overflow-hidden isolate">
+          <BackgroundPattern />
+          <div className="flex-1 flex items-center justify-center p-4">
+            <div className="w-full max-w-md relative z-10 overflow-hidden rounded-2xl shadow-xl border border-border/40 bg-background/80 backdrop-blur-sm p-8 text-center">
+              <div className="space-y-4">
+                <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" />
+                <h2 className="text-2xl font-bold">Loading...</h2>
+                <p className="text-muted-foreground">
+                  Please wait while we load the verification page...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <VerifyContent />
+    </Suspense>
   );
 }
